@@ -1,8 +1,14 @@
-# Title
+# OOP Enrollment System
 
 ---
 
-**Author**: Carl Dominic Tan
+**Author**: Wreign Eyriel Hizon
 
-**1. Description**
+**1. Description:**
+We learned more about OOP and git and github and more!
+
+
+
+Here is the output: 
+
 ![output.png](src/main/resources/images/output.png)
