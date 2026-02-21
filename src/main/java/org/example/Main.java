@@ -10,6 +10,7 @@ import java.util.*;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     static Scanner input = new Scanner(System.in);
+
     static void main() {
         StudentRegistration studentRegistration = new StudentRegistration();
         CourseRegistration courseRegistration = new CourseRegistration();
@@ -36,7 +37,7 @@ public class Main {
 
         System.out.println("----------------------");
         //Update the Student Info
-        studentRegistration.updateStudent("000123","Carl Tan", "Accounting");
+        studentRegistration.updateStudent("000123", "Carl Tan", "Accounting");
         studentRegistration.displayAllStudent(); // Displays Students
 
         System.out.println("----------------------");
@@ -56,7 +57,7 @@ public class Main {
 
         System.out.println("----------------------");
         //updateCourse
-        courseRegistration.updateCourse("0001" , "Art Appreciation" , "Artapre");
+        courseRegistration.updateCourse("0001", "Art Appreciation", "Artapre");
         courseRegistration.displayAllCourse(); // displays courses
 
         System.out.println("----------------------");
@@ -68,11 +69,37 @@ public class Main {
 
         System.out.println("==========================");
         // Interactive Student Registration.
-        boolean StudentRunning = true;
+        boolean StudentRunning = false;
+        boolean CourseRunning = false;
+        boolean raning = true;
 
+        while (raning) {
+            System.out.println("--------------------");
+            System.out.println("1. Enter Student System");
+            System.out.println("2. Enter Course System");
+            System.out.println("3. Exit");
+            System.out.println("--------------------");
+            System.out.print("Select: ");
+            int selection4 = input.nextInt();
+            System.out.println("--------------------");
 
+            switch (selection4) {
+                case 1:
+                    StudentRunning = true;
+                    break;
+                case 2:
+                    CourseRunning = true;
+                    break;
+                case 3:
+                    raning = false;
+                    break;
+                default:
+                    System.out.println("Try again");
+            }
 
-            while (StudentRunning){
+            input.nextLine();
+
+            while (StudentRunning) {
                 System.out.println("--------------------");
                 System.out.println("1. Save Student");
                 System.out.println("2. View All Student");
@@ -106,5 +133,42 @@ public class Main {
                 }
 
             }
+
+            while (CourseRunning) {
+                System.out.println("--------------------");
+                System.out.println("1. Save Course");
+                System.out.println("2. View All Courses");
+                System.out.println("3. Edit Course");
+                System.out.println("4. Delete Course");
+                System.out.println("5. Exit");
+                System.out.println("--------------------");
+                System.out.print("Select: ");
+                int selection = input.nextInt();
+                System.out.println("--------------------");
+                input.nextLine();
+
+                switch (selection) {
+                    case 1:
+                        courseRegistration.saveCourse();
+                        break;
+                    case 2:
+                        courseRegistration.displayAllCourse();
+                        break;
+                    case 3:
+                        courseRegistration.updateCourse();
+                        break;
+                    case 4:
+                        courseRegistration.removeCourse();
+                        break;
+                    case 5:
+                        CourseRunning = false;
+                        break;
+                    default:
+                        System.out.println("Invalid Input, Try Again");
+                }
+
+            }
+        }
+
     }
 }
