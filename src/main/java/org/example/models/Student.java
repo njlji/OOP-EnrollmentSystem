@@ -1,8 +1,6 @@
 package org.example.models;
 
-public class Student {
-    private String studentID;
-    private String studentName;
+public class Student extends Person{
     private String program;
 
     public Student(){
@@ -10,26 +8,25 @@ public class Student {
     }
 
     public Student(String studentID, String studentName, String program){
-        this.studentID = studentID;
-        this.studentName = studentName;
+        super(studentName,studentID);
         this.program = program;
     }
 
     public String getStudentID(){
-        return studentID;
+        return super.getID();
     }
 
-    public void setStudentID(String studentID){
-        this.studentID = studentID;
-    }
-
-    public String getStudentName(){
-        return studentName;
-    }
-
-    public void setStudentName(String studentName){
-        this.studentName = studentName;
-    }
+//    public void setStudentID(String studentID){
+//        super.setID(studentID);
+//    }
+//
+//    public String getStudentName(){
+//        return super.getName();
+//    }
+//
+//    public void setStudentName(String studentName){
+//        super.setName(studentName);
+//    }
 
     public String getProgram(){
         return program;
@@ -41,6 +38,6 @@ public class Student {
 
     @Override
     public String toString(){
-        return "StudentID: " + studentID + "\nStudent Name: " + studentName + "\nProgram: " + program;
+        return "StudentID: " + super.getID() + "\nStudent Name: " + super.getName() + "\nProgram: " + program;
     }
 }

@@ -33,8 +33,8 @@ public class StudentRegistration {
 
     public void updateStudent(String studentID, String studentName, String program){
         for(int i = 0; i < students.size(); i++){
-            if(students.get(i).getStudentID().equals(studentID)){
-                students.get(i).setStudentName(studentName);
+            if(students.get(i).getID().equals(studentID)){
+                students.get(i).setID(studentName);
                 students.get(i).setProgram(program);
             }
         }
@@ -58,8 +58,8 @@ public class StudentRegistration {
         System.out.print("Enter Program: ");
         String program = input.nextLine();
 
-        students.get(selection).setStudentName(studentName);
-        students.get(selection).setStudentID(studentID);
+        students.get(selection).setName(studentName);
+        students.get(selection).setID(studentID);
         students.get(selection).setProgram(program);
     }
 
