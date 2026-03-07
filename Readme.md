@@ -5,10 +5,10 @@
 **Author**: Wreign Eyriel Hizon
 
 **1. Description:**
-We learned more about OOP and git and github and more!
+Learned About inheritance!
 
 
 
-Here is the output: 
+Here is the code: 
 
-![output.png](src/main/resources/images/output.png)
+![Inheritance.png](src/main/resources/images/Inheritance.png)
