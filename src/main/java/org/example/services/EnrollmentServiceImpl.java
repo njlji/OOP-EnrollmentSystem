@@ -41,4 +41,24 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
         }
         System.out.println("=========================================\n");
     }
+
+    @Override
+    public void removeStudentFromSection(Student student, Section section) {
+        boolean removed = false;
+
+        // Loop through the section's students to find the matching ID
+        for (int i = 0; i < section.getEnrolledStudents().size(); i++) {
+            if (section.getEnrolledStudents().get(i).getId().equals(student.getId())) {
+                section.getEnrolledStudents().remove(i);
+                removed = true;
+                break;
+            }
+        }
+
+        if (removed) {
+            System.out.println("✅ SUCCESS: " + student.getName() + " has been removed from " + section.getSectionName());
+        } else {
+            System.out.println("❌ ERROR: " + student.getName() + " is not enrolled in this section.");
+        }
+    }
 }
