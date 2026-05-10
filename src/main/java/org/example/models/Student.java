@@ -1,43 +1,22 @@
-package org.example.models;
+package models;
 
-public class Student extends Person{
+public class Student extends Person {
     private String program;
 
-    public Student(){
-
-    }
-
-    public Student(String studentID, String studentName, String program){
-        super(studentName,studentID);
+    public Student(String id, String name, String program) {
+        super(id, name);
         this.program = program;
     }
 
-    public String getStudentID(){
-        return super.getID();
-    }
+    public String getProgram() { return program; }
+    public void setProgram(String program) { this.program = program; }
 
-//    public void setStudentID(String studentID){
-//        super.setID(studentID);
-//    }
-//
-//    public String getStudentName(){
-//        return super.getName();
-//    }
-//
-//    public void setStudentName(String studentName){
-//        super.setName(studentName);
-//    }
+    private TuitionFeePayment tuitionAccount = new TuitionFeePayment();
 
-    public String getProgram(){
-        return program;
-    }
-
-    public void setProgram(String program){
-        this.program = program;
-    }
+    public TuitionFeePayment getTuitionAccount() { return tuitionAccount; }
 
     @Override
-    public String toString(){
-        return "StudentID: " + super.getID() + "\nStudent Name: " + super.getName() + "\nProgram: " + program;
+    public String toString() {
+        return "Student ID: " + getId() + " | Name: " + getName() + " | Program: " + program;
     }
 }
