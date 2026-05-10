@@ -1,174 +1,111 @@
-package org.example;
+import models.*;
+import interfaces.*;
+import services.*;
+import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import org.example.models.Course;
-import org.example.models.Student;
-import org.example.service.CourseRegistration;
-import org.example.service.StudentRegistration;
-import java.util.*;
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static Scanner input = new Scanner(System.in);
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Initialize Services
+        IEnrollmentService enrollmentService = new EnrollmentServiceImpl();
+        ITuitionService tuitionService = new TuitionServiceImpl();
+        IInstructorService instructorService = new InstructorServiceImpl(); // New service added
+        
+        // Setup initial Department and Sections
+        Department ccs = new Department("College of Computer Studies");
+        Section bsit1A = new Section("BSIT-1A", 30); // Capacity 30
+        Section bsit1B = new Section("BSIT-1B", 30); // Capacity 30
+        ccs.addSection(bsit1A);
+        ccs.addSection(bsit1B);
 
-    static void main() {
-        StudentRegistration studentRegistration = new StudentRegistration();
-        CourseRegistration courseRegistration = new CourseRegistration();
-        Student JohnDoe = new Student("000123", "John Doe", "Information Technology");
-        Student JaneDoe = new Student("000124", "Jane Doe", "Information Technology");
-        Course Inteprog = new Course("0001", "Integrative Programming", "Information Technology");
+        boolean isRunning = true;
 
-        System.out.println(JohnDoe);
-        System.out.println("-------------------------");
-        System.out.println(JaneDoe);
-        System.out.println("-------------------------");
-        System.out.println(Inteprog);
+        while (isRunning) {
+            System.out.println("\n=== ENROLLMENT SYSTEM MAIN MENU ===");
+            System.out.println("1. View Department Hierarchy (View All)");
+            System.out.println("2. Manage a Section (Add Students/Instructors)");
+            System.out.println("3. Calculate Tuition for a Student");
+            System.out.println("4. Exit");
+            System.out.print("Enter choice: ");
 
-        System.out.println("=========================");
-        System.out.println("STUDENT REGISTRATION");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
 
-        //Save/Add Student
-        studentRegistration.saveStudent(JohnDoe);
-        studentRegistration.saveStudent(JaneDoe);
-
-        System.out.println("----------------------");
-        //Displays all the students
-        studentRegistration.displayAllStudent();
-
-        System.out.println("----------------------");
-        //Update the Student Info
-        studentRegistration.updateStudent("000123", "Carl Tan", "Accounting");
-        studentRegistration.displayAllStudent(); // Displays Students
-
-        System.out.println("----------------------");
-        //Removes a Student
-        studentRegistration.removeStudent("000123");
-        studentRegistration.displayAllStudent(); // Displays Students
-
-        System.out.println("==========================");
-        System.out.println("COURSE REGISTRATION");
-
-        //Save Course
-        courseRegistration.saveCourse(Inteprog);
-
-        System.out.println("----------------------");
-        //Display All
-        courseRegistration.displayAllCourse();
-
-        System.out.println("----------------------");
-        //updateCourse
-        courseRegistration.updateCourse("0001", "Art Appreciation", "Artapre");
-        courseRegistration.displayAllCourse(); // displays courses
-
-        System.out.println("----------------------");
-        //Remove Course
-        courseRegistration.removeCourse("0001");
-        courseRegistration.displayAllCourse(); // display courses
-        System.out.println("*remove course*");
-        System.out.println("----------------------");
-
-        System.out.println("==========================");
-        // Interactive Student Registration.
-        boolean StudentRunning = false;
-        boolean CourseRunning = false;
-        boolean raning = true;
-
-        while (raning) {
-            System.out.println("--------------------");
-            System.out.println("1. Enter Student System");
-            System.out.println("2. Enter Course System");
-            System.out.println("3. Exit");
-            System.out.println("--------------------");
-            System.out.print("Select: ");
-            int selection4 = input.nextInt();
-            System.out.println("--------------------");
-
-            switch (selection4) {
-                case 1:
-                    StudentRunning = true;
-                    break;
-                case 2:
-                    CourseRunning = true;
-                    break;
-                case 3:
-                    raning = false;
-                    break;
-                default:
-                    System.out.println("Try again");
-            }
-
-            input.nextLine();
-
-            while (StudentRunning) {
-                System.out.println("--------------------");
-                System.out.println("1. Save Student");
-                System.out.println("2. View All Student");
-                System.out.println("3. Edit Student");
-                System.out.println("4. Delete Student");
-                System.out.println("5. Exit");
-                System.out.println("--------------------");
-                System.out.print("Select: ");
-                int selection = input.nextInt();
-                System.out.println("--------------------");
-                input.nextLine();
-
-                switch (selection) {
+                switch (choice) {
                     case 1:
-                        studentRegistration.saveStudent();
+                        // This perfectly satisfies the "Institutional Hierarchy Viewing" requirement
+                        enrollmentService.viewDepartmentHierarchy(ccs);
                         break;
+                        
                     case 2:
-                        studentRegistration.displayAllStudent();
+                        // Interactive Section Management
+                        System.out.println("\n--- AVAILABLE SECTIONS ---");
+                        for (int i = 0; i < ccs.getSections().size(); i++) {
+                            System.out.println((i + 1) + ". " + ccs.getSections().get(i).getSectionName());
+                        }
+                        System.out.print("Select a section number to manage: ");
+                        int secChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+
+                        if (secChoice > 0 && secChoice <= ccs.getSections().size()) {
+                            Section selectedSection = ccs.getSections().get(secChoice - 1);
+                            
+                            System.out.println("\n--- MANAGING: " + selectedSection.getSectionName() + " ---");
+                            System.out.println("1. Enroll a New Student");
+                            System.out.println("2. Assign an Instructor");
+                            System.out.print("Enter choice: ");
+                            int manageChoice = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline
+
+                            if (manageChoice == 1) {
+                                // Add Student dynamically by typing
+                                System.out.print("Enter Student ID: ");
+                                String id = scanner.nextLine();
+                                System.out.print("Enter Student Name: ");
+                                String name = scanner.nextLine();
+                                System.out.print("Enter Program (e.g., BSIT): ");
+                                String prog = scanner.nextLine();
+                                
+                                Student newStudent = new Student(id, name, prog);
+                                enrollmentService.enrollStudentInSection(newStudent, selectedSection);
+
+                            } else if (manageChoice == 2) {
+                                // Add Instructor dynamically by typing
+                                System.out.print("Enter Instructor ID: ");
+                                String id = scanner.nextLine();
+                                System.out.print("Enter Instructor Name: ");
+                                String name = scanner.nextLine();
+                                
+                                Instructor newInstructor = new Instructor(id, name);
+                                instructorService.assignInstructorToSection(newInstructor, selectedSection);
+                            } else {
+                                System.out.println("❌ Invalid choice.");
+                            }
+                        } else {
+                            System.out.println("❌ Invalid section selected.");
+                        }
                         break;
+
                     case 3:
-                        studentRegistration.updateStudent();
+                        System.out.println("Tuition module selected (Requires searching for a student, to be implemented further).");
                         break;
+                        
                     case 4:
-                        studentRegistration.removeStudent();
+                        System.out.println("Exiting System. Goodbye!");
+                        isRunning = false;
                         break;
-                    case 5:
-                        StudentRunning = false;
-                        break;
+                        
                     default:
-                        System.out.println("Invalid Input, Try Again");
+                        System.out.println("❌ Invalid choice. Please enter a valid number.");
                 }
-
-            }
-
-            while (CourseRunning) {
-                System.out.println("--------------------");
-                System.out.println("1. Save Course");
-                System.out.println("2. View All Courses");
-                System.out.println("3. Edit Course");
-                System.out.println("4. Delete Course");
-                System.out.println("5. Exit");
-                System.out.println("--------------------");
-                System.out.print("Select: ");
-                int selection = input.nextInt();
-                System.out.println("--------------------");
-                input.nextLine();
-
-                switch (selection) {
-                    case 1:
-                        courseRegistration.saveCourse();
-                        break;
-                    case 2:
-                        courseRegistration.displayAllCourse();
-                        break;
-                    case 3:
-                        courseRegistration.updateCourse();
-                        break;
-                    case 4:
-                        courseRegistration.removeCourse();
-                        break;
-                    case 5:
-                        CourseRunning = false;
-                        break;
-                    default:
-                        System.out.println("Invalid Input, Try Again");
-                }
-
+            } catch (InputMismatchException e) {
+                System.out.println("❌ ERROR: Invalid input! Please enter a number, not letters.");
+                scanner.nextLine(); // Clear the bad input to prevent infinite loops
             }
         }
-
+        scanner.close();
     }
 }
