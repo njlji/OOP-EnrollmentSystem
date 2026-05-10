@@ -11,23 +11,23 @@ public class Main {
         // Initialize Services
         IEnrollmentService enrollmentService = new EnrollmentServiceImpl();
         ITuitionService tuitionService = new TuitionServiceImpl();
-        IInstructorService instructorService = new InstructorServiceImpl(); // New service added
+        IInstructorService instructorService = new InstructorServiceImpl();
+        IStudentService studentService = new StudentServiceImpl(); // NEW: Student tracking service
         
-        // Setup initial Department and Sections
+        // Setup initial dummy data
         Department ccs = new Department("College of Computer Studies");
-        Section bsit1A = new Section("BSIT-1A", 30); // Capacity 30
-        Section bsit1B = new Section("BSIT-1B", 30); // Capacity 30
+        Section bsit1A = new Section("BSIT-1A", 30); 
         ccs.addSection(bsit1A);
-        ccs.addSection(bsit1B);
 
         boolean isRunning = true;
 
         while (isRunning) {
             System.out.println("\n=== ENROLLMENT SYSTEM MAIN MENU ===");
-            System.out.println("1. View Department Hierarchy (View All)");
+            System.out.println("1. View Department Hierarchy");
             System.out.println("2. Manage a Section (Add Students/Instructors)");
             System.out.println("3. Calculate Tuition for a Student");
-            System.out.println("4. Exit");
+            System.out.println("4. Pay Tuition / Check Balance");
+            System.out.println("5. Exit");
             System.out.print("Enter choice: ");
 
             try {
@@ -36,19 +36,17 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        // This perfectly satisfies the "Institutional Hierarchy Viewing" requirement
                         enrollmentService.viewDepartmentHierarchy(ccs);
                         break;
                         
                     case 2:
-                        // Interactive Section Management
                         System.out.println("\n--- AVAILABLE SECTIONS ---");
                         for (int i = 0; i < ccs.getSections().size(); i++) {
                             System.out.println((i + 1) + ". " + ccs.getSections().get(i).getSectionName());
                         }
                         System.out.print("Select a section number to manage: ");
                         int secChoice = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
+                        scanner.nextLine(); 
 
                         if (secChoice > 0 && secChoice <= ccs.getSections().size()) {
                             Section selectedSection = ccs.getSections().get(secChoice - 1);
@@ -58,22 +56,23 @@ public class Main {
                             System.out.println("2. Assign an Instructor");
                             System.out.print("Enter choice: ");
                             int manageChoice = scanner.nextInt();
-                            scanner.nextLine(); // Consume newline
+                            scanner.nextLine(); 
 
                             if (manageChoice == 1) {
-                                // Add Student dynamically by typing
                                 System.out.print("Enter Student ID: ");
                                 String id = scanner.nextLine();
                                 System.out.print("Enter Student Name: ");
                                 String name = scanner.nextLine();
-                                System.out.print("Enter Program (e.g., BSIT): ");
+                                System.out.print("Enter Program: ");
                                 String prog = scanner.nextLine();
                                 
                                 Student newStudent = new Student(id, name, prog);
+                                
+                                // NEW: Save to our global student database AND enroll them
+                                studentService.addStudent(newStudent); 
                                 enrollmentService.enrollStudentInSection(newStudent, selectedSection);
 
                             } else if (manageChoice == 2) {
-                                // Add Instructor dynamically by typing
                                 System.out.print("Enter Instructor ID: ");
                                 String id = scanner.nextLine();
                                 System.out.print("Enter Instructor Name: ");
@@ -81,19 +80,48 @@ public class Main {
                                 
                                 Instructor newInstructor = new Instructor(id, name);
                                 instructorService.assignInstructorToSection(newInstructor, selectedSection);
-                            } else {
-                                System.out.println("❌ Invalid choice.");
                             }
-                        } else {
-                            System.out.println("❌ Invalid section selected.");
                         }
                         break;
 
                     case 3:
-                        System.out.println("Tuition module selected (Requires searching for a student, to be implemented further).");
+                        // TUITION MODULE: CALCULATE
+                        System.out.print("Enter Student ID to search: ");
+                        String searchId = scanner.nextLine();
+                        Student foundStudent = studentService.getStudentById(searchId);
+
+                        if (foundStudent != null) {
+                            System.out.print("Enter number of units for " + foundStudent.getName() + ": ");
+                            int units = scanner.nextInt();
+                            tuitionService.calculateFee(foundStudent, units);
+                        } else {
+                            System.out.println("❌ ERROR: Student not found. Please ensure they are enrolled first.");
+                        }
                         break;
                         
                     case 4:
+                        // TUITION MODULE: PAYMENTS
+                        System.out.print("Enter Student ID to process payment: ");
+                        String payId = scanner.nextLine();
+                        Student payStudent = studentService.getStudentById(payId);
+
+                        if (payStudent != null) {
+                            double balance = tuitionService.getRemainingBalance(payStudent);
+                            System.out.println("Current Balance for " + payStudent.getName() + ": P" + balance);
+                            
+                            if (balance > 0) {
+                                System.out.print("Enter payment amount: ");
+                                double payment = scanner.nextDouble();
+                                tuitionService.makePayment(payStudent, payment);
+                            } else {
+                                System.out.println("✅ This student is fully paid.");
+                            }
+                        } else {
+                            System.out.println("❌ ERROR: Student not found.");
+                        }
+                        break;
+
+                    case 5:
                         System.out.println("Exiting System. Goodbye!");
                         isRunning = false;
                         break;
@@ -103,7 +131,7 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("❌ ERROR: Invalid input! Please enter a number, not letters.");
-                scanner.nextLine(); // Clear the bad input to prevent infinite loops
+                scanner.nextLine(); 
             }
         }
         scanner.close();

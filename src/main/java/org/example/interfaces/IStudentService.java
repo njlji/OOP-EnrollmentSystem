@@ -7,4 +7,7 @@ public interface IStudentService {
     void updateStudent(String id, String newName, String newProgram);
     void removeStudent(String id);
     List<Student> getAllStudents();
+    
+    // NEW: Search functionality for the tuition module
+    Student getStudentById(String id); 
 }
